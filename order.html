@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنور خبز وزيت | السلة والأوردرات</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        .single-cart-container {
+            max-width: 750px;
+            margin: 25px auto;
+            animation: fadeInUp 0.5s ease-out;
+            padding: 0 15px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تأثير الاهتزاز للحقول الناقصة */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .shake-effect {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ff6b6b !important;
+        }
+
+        /* نبض ذهبي لزر الإرسال */
+        @keyframes buttonGoldPulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .submit-btn {
+            animation: buttonGoldPulse 2.5s infinite;
+            font-weight: 900 !important;
+            letter-spacing: 0.5px;
+        }
+
+        /* القائمة غير المعجقة */
+        .cart-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item-row {
+            background: linear-gradient(160deg, #161616 0%, #0f0f0f 100%);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .cart-item-row:hover {
+            border-color: #d4af37;
+        }
+
+        .cart-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cart-item-name {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .cart-item-unit-price {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .cart-item-controls-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-qty-controls {
+            display: inline-flex;
+            align-items: center;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .cart-qty-btn {
+            background: #1a1a1a;
+            border: none;
+            width: 26px;
+            height: 28px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .cart-qty-btn:hover {
+            background: #252525;
+        }
+
+        .cart-qty-val {
+            width: 30px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .cart-item-total {
+            color: #d4af37;
+            font-size: 15px;
+            font-weight: 900;
+            min-width: 80px;
+            text-align: left;
+        }
+
+        .delete-item-btn {
+            background: rgba(220, 38, 38, 0.1);
+            color: #ff6b6b;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .delete-item-btn:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        /* خيارات الاستلام التفاعلية */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .option-card {
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            font-weight: 700;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .option-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: #171717;
+        }
+
+        .option-card.selected {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #d4af37;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+        }
+
+        .option-card input[type="radio"] {
+            accent-color: #d4af37;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .general-note-box {
+            background: #141414;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .general-note-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #d4af37;
+        }
+        .general-note-box textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            background-color: #111;
+            color: #e5e5e5;
+            outline: none;
+            resize: vertical;
+            min-height: 70px;
+        }
+        .general-note-box textarea:focus {
+            border-color: #d4af37;
+            background-color: #161616;
+        }
+
+        .clear-cart-btn {
+            background: rgba(220, 38, 38, 0.1);
+            color: #ff6b6b;
+            border: 1px dashed rgba(220, 38, 38, 0.4);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .clear-cart-btn:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .cart-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        /* نافذة النجاح وحاسبة الوقت التنازلي */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 13, 0.88);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .success-modal {
+            background: linear-gradient(160deg, #1a1a1a 0%, #101010 100%);
+            border: 2px solid #d4af37;
+            padding: 35px 25px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.35);
+            animation: modalScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes modalScale {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+            animation: goldPulseIcon 2s infinite;
+        }
+
+        @keyframes goldPulseIcon {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6)); }
+            100% { transform: scale(1); }
+        }
+
+        .success-modal h3 {
+            color: #d4af37;
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .success-modal p {
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .timer-box {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .timer-box span {
+            display: block;
+            color: #d4af37;
+            font-size: 18px;
+            font-weight: 900;
+            margin-top: 4px;
+        }
+
+        .success-modal-btn {
+            background: #d4af37;
+            color: #0d0d0d;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .success-modal-btn:hover {
+            background: #e6c547;
+        }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: #1a1a1a;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 8px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .scroll-top-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="toastAlert" class="toast-notification">تمت العملية بنجاح!</div>
+
+    <!-- نافذة النجاح مع حاسبة الوقت التنازلي -->
+    <div id="successOverlay" class="success-overlay">
+        <div class="success-modal">
+            <div class="success-icon">✨🥖</div>
+            <h3>تم إرسال طلبك بنجاح للواتساب!</h3>
+            <p>جاري تحضير طلبك طازجاً على جمر التنور خصيصاً لك.</p>
+            
+            <div class="timer-box">
+                <small style="color: #aaa; font-weight: 700;">⏱️ الوقت التقديري لتجهيز الطلب:</small>
+                <span id="countdownTimer">15:00 دقيقة</span>
+            </div>
+
+            <button type="button" class="success-modal-btn" onclick="closeSuccessModal()">حسناً، متابعة</button>
+        </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">للأعلى ▲</button>
+
+    <header class="navbar">
+        <div class="logo">تنور خبز وزيت <span>للفطائر والمعجنات</span></div>
+        <nav class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="menu.html">قائمة الطعام</a>
+            <a href="order.html" class="active">الأوردر والسلة</a>
+        </nav>
+    </header>
+
+    <div class="page-container">
+        <div class="section-title">
+            <h2>🛒 سلة الطلبات وإتمام الأوردر</h2>
+            <p>راجع محتويات سلتك، أضف ملاحظاتك، وأرسل طلبك بكل سهولة</p>
+        </div>
+
+        <div class="single-cart-container">
+            <div class="form-container cart-section">
+                <span class="section-tag">سلة المشتريات</span>
+                <h2>📋 قائمة الأصناف المطلوبة</h2>
+
+                <div id="cartContainerBox" class="cart-list-container"></div>
+
+                <div id="emptyCartMsg" style="text-align: center; padding: 30px; color: #aaa;">
+                    <p class="empty-cart-text">السلة فارغة حالياً... يرجى اختيار الأطباق من <a href="menu.html" style="color: #d4af37; font-weight: bold;">قائمة الطعام</a></p>
+                </div>
+
+                <div class="cart-actions-bar" id="cartActionsBar" style="display: none;">
+                    <button type="button" class="clear-cart-btn" onclick="clearEntireCart()">🗑️ إفراغ السلة بالكامل</button>
+                </div>
+
+                <div class="general-note-box" id="generalNoteContainer" style="display: none;">
+                    <label for="generalOrderNote">📝 ملاحظات عامة على الطلبية (اختياري)</label>
+                    <textarea id="generalOrderNote" placeholder="مثال: الاكثار من الملح أو أي تفاصيل أخرى..."></textarea>
+                </div>
+
+                <div class="cart-total">
+                    💰 المجموع الكلي: <span id="cartTotalPrice">0</span> ل.س
+                </div>
+                
+                <form class="action-form" onsubmit="sendCartToWhatsApp(event)">
+                    <div class="form-group" id="groupName">
+                        <label>👤 الاسم الكامل</label>
+                        <input type="text" id="clientName" placeholder="أدخل اسمك الكريم" required oninput="saveClientInfo()">
+                    </div>
+                    <div class="form-group" id="groupPhone">
+                        <label>📱 رقم الهاتف</label>
+                        <input type="text" id="clientPhone" placeholder="رقم الهاتف للتواصل" required oninput="saveClientInfo()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>🛵 طريقة الاستلام:</label>
+                        <div class="options-grid">
+                            <label class="option-card selected" id="optHome" onclick="selectOrderType('توصيل إلى المنزل', this)">
+                                <input type="radio" name="orderTypeRadio" value="توصيل إلى المنزل" checked>
+                                <span>توصيل إلى المنزل</span>
+                            </label>
+                            <label class="option-card" id="optPickup" onclick="selectOrderType('استلام شخصي من المحل', this)">
+                                <input type="radio" name="orderTypeRadio" value="استلام شخصي من المحل">
+                                <span>استلام شخصي من المحل</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>⏱️ وقت الاستلام المفضل:</label>
+                        <div class="options-grid">
+                            <label class="option-card selected" id="optInstant" onclick="selectTimeType('فوري (في أسرع وقت)', this)">
+                                <input type="radio" name="timeTypeRadio" value="فوري (في أسرع وقت)" checked>
+                                <span>⚡ فوري (أسرع وقت)</span>
+                            </label>
+                            <label class="option-card" id="optCustom" onclick="selectTimeType('مخصص', this)">
+                                <input type="radio" name="timeTypeRadio" value="مخصص">
+                                <span>🕒 وقت مخصص...</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="customTimeBox" style="display: none; margin-top: 10px;">
+                        <label style="color: #d4af37;">⏰ اكتب الوقت المطلوب:</label>
+                        <input type="text" id="customTimeString" placeholder="مثال: الساعة 2:30 ظهراً">
+                    </div>
+
+                    <button type="submit" class="submit-btn">إرسال الطلب عبر الواتساب 🚀</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة © 2026 | تنور خبز وزيت للفطائر والمعجنات</p>
+    </footer>
+
+    <script>
+        const restaurantPhone = "963992428473";
+        let cart = [];
+        let selectedOrderTypeVal = "توصيل إلى المنزل";
+
+        window.onscroll = function() {
+            let btn = document.getElementById('scrollTopBtn');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // حفظ بيانات الزبون تلقائياً بذاكرة المتصفح (Auto-fill)
+        function saveClientInfo() {
+            let name = document.getElementById('clientName').value;
+            let phone = document.getElementById('clientPhone').value;
+            localStorage.setItem('clientName', name);
+            localStorage.setItem('clientPhone', phone);
+        }
+
+        window.onload = function() {
+            let savedCart = localStorage.getItem('restaurantCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            updateCartUI();
+
+            // استرجاع معلومات الزبون المحفوظة مسبقاً تلقائياً
+            if (localStorage.getItem('clientName')) {
+                document.getElementById('clientName').value = localStorage.getItem('clientName');
+            }
+            if (localStorage.getItem('clientPhone')) {
+                document.getElementById('clientPhone').value = localStorage.getItem('clientPhone');
+            }
+        };
+
+        function selectOrderType(val, cardEl) {
+            selectedOrderTypeVal = val;
+            document.querySelectorAll('#optHome, #optPickup').forEach(el => el.classList.remove('selected'));
+            cardEl.classList.add('selected');
+            cardEl.querySelector('input').checked = true;
+        }
+
+        function selectTimeType(type, cardEl) {
+            document.querySelectorAll('#optInstant, #optCustom').forEach(el => el.classList.remove('selected'));
+            cardEl.classList.add('selected');
+            cardEl.querySelector('input').checked = true;
+
+            let customBox = document.getElementById('customTimeBox');
+            if (type === 'مخصص') {
+                customBox.style.display = 'block';
+                document.getElementById('customTimeString').focus();
+            } else {
+                customBox.style.display = 'none';
+            }
+        }
+
+        function showToast(text) {
+            let toast = document.getElementById('toastAlert');
+            toast.innerText = text;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // عداد تنازلي وقت التحضير (Live Prep Timer)
+        function startPrepCountdown(durationMinutes) {
+            let timerEl = document.getElementById('countdownTimer');
+            let totalSeconds = durationMinutes * 60;
+
+            let interval = setInterval(() => {
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds} دقيقة`;
+
+                if (totalSeconds <= 0) {
+                    clearInterval(interval);
+                    timerEl.innerText = "جاهز للتسليم / التوصيل الآن! 🔥";
+                } else {
+                    totalSeconds--;
+                }
+            }, 1000);
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successOverlay').classList.remove('active');
+        }
+
+        function updateCartUI() {
+            let cartBox = document.getElementById('cartContainerBox');
+            let emptyMsg = document.getElementById('emptyCartMsg');
+            let totalPriceEl = document.getElementById('cartTotalPrice');
+            let generalNoteBox = document.getElementById('generalNoteContainer');
+            let cartActionsBar = document.getElementById('cartActionsBar');
+
+            if (cart.length === 0) {
+                cartBox.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                totalPriceEl.innerText = '0';
+                generalNoteBox.style.display = 'none';
+                cartActionsBar.style.display = 'none';
+                return;
+            }
+
+            cartBox.style.display = 'flex';
+            emptyMsg.style.display = 'none';
+            generalNoteBox.style.display = 'block';
+            cartActionsBar.style.display = 'flex';
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.qty;
+                total += itemTotal;
+                html += `
+                    <div class="cart-item-row">
+                        <div class="cart-item-info">
+                            <span class="cart-item-name">✨ ${item.name}</span>
+                            <span class="cart-item-unit-price">${item.price.toLocaleString()} ل.س للقطعة</span>
+                        </div>
+                        <div class="cart-item-controls-area">
+                            <div class="cart-qty-controls">
+                                <button type="button" class="cart-qty-btn" onclick="changeItemQty(${index}, -1)">-</button>
+                                <span class="cart-qty-val">${item.qty}</span>
+                                <button type="button" class="cart-qty-btn" onclick="changeItemQty(${index}, 1)">+</button>
+                            </div>
+                            <span class="cart-item-total">${itemTotal.toLocaleString()} ل.س</span>
+                            <button type="button" class="delete-item-btn" onclick="removeItem(${index})" title="حذف الصنف">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartBox.innerHTML = html;
+            totalPriceEl.innerText = total.toLocaleString();
+        }
+
+        function changeItemQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty < 1) cart[index].qty = 1;
+            if (cart[index].qty > 50) cart[index].qty = 50;
+            localStorage.setItem('restaurantCart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('restaurantCart', JSON.stringify(cart));
+            updateCartUI();
+            showToast('تم حذف الصنف من السلة 🗑️');
+        }
+
+        function clearEntireCart() {
+            if (confirm('هل أنت متأكد من إفراغ السلة بالكامل؟')) {
+                cart = [];
+                localStorage.removeItem('restaurantCart');
+                updateCartUI();
+                showToast('تم إفراغ السلة بنجاح ✨');
+            }
+        }
+
+        function sendCartToWhatsApp(event) {
+            event.preventDefault();
+
+            let nameInput = document.getElementById('clientName');
+            let phoneInput = document.getElementById('clientPhone');
+            let name = nameInput.value.trim();
+            let phone = phoneInput.value.trim();
+
+            if (cart.length === 0) {
+                showToast('السلة فارغة، اختر بعض الأطباق أولاً! 🥖');
+                let boxEl = document.getElementById('cartContainerBox');
+                boxEl.classList.add('shake-effect');
+                setTimeout(() => boxEl.classList.remove('shake-effect'), 500);
+                return;
+            }
+
+            if (name === "" || phone === "") {
+                showToast('يرجى إكمال الاسم ورقم الهاتف! ⚠️');
+                if(name === "") {
+                    nameInput.classList.add('shake-effect');
+                    setTimeout(() => nameInput.classList.remove('shake-effect'), 500);
+                }
+                if(phone === "") {
+                    phoneInput.classList.add('shake-effect');
+                    setTimeout(() => phoneInput.classList.remove('shake-effect'), 500);
+                }
+                return;
+            }
+
+            let finalTime = "فوري (في أسرع وقت)";
+            let timeCardSelected = document.querySelector('input[name="timeTypeRadio"]:checked');
+            if (timeCardSelected && timeCardSelected.value === "مخصص") {
+                let customVal = document.getElementById('customTimeString').value.trim();
+                finalTime = customVal !== "" ? customVal : "وقت مخصص (غير محدد)";
+            }
+
+            let generalNote = document.getElementById('generalOrderNote').value.trim();
+            
+            let message = `🛎️ *طلب جديد - تنور خبز وزيت* 🥖\n` +
+                          `─────────────────────\n` +
+                          `👤 *الاسم:* ${name}\n` +
+                          `📱 *الهاتف:* ${phone}\n` +
+                          `🛵 *الاستلام:* ${selectedOrderTypeVal}\n` +
+                          `⏱️ *الوقت:* ${finalTime}\n`;
+
+            if (generalNote !== "") {
+                message += `📝 *ملاحظات:* ${generalNote}\n`;
+            }
+
+            message += `─────────────────────\n` +
+                       `🛒 *تفاصيل الأطباق:*\n`;
+
+            let total = 0;
+            cart.forEach((item) => {
+                let itemTotal = item.price * item.qty;
+                total += itemTotal;
+                message += `▪️ ${item.name}\n`;
+                message += `   الكمية: (${item.qty}) | السعر: ${itemTotal.toLocaleString()} ل.س\n`;
+            });
+
+            message += `─────────────────────\n` +
+                       `💰 *المجموع الكلي: ${total.toLocaleString()} ل.س*`;
+
+            let url = `https://wa.me/${restaurantPhone}?text=` + encodeURIComponent(message);
+            
+            // إظهار نافذة النجاح وبدء عداد التحضير (15 دقيقة)
+            document.getElementById('successOverlay').classList.add('active');
+            startPrepCountdown(15);
+
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

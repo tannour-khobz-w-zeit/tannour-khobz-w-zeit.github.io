@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنور خبز وزيت | قائمة الطعام الرقمية</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #e5e5e5;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .menu-card {
+            background: linear-gradient(160deg, #161616 0%, #0f0f0f 100%);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.35s ease;
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-6px);
+            border-color: #d4af37;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+
+        /* حركة النبض والتأثير الذهبي عند الإضافة */
+        @keyframes cardPulse {
+            0% { transform: scale(1); border-color: #d4af37; }
+            50% { transform: scale(1.02); border-color: #fff; box-shadow: 0 0 20px #d4af37; }
+            100% { transform: scale(1); border-color: #d4af37; }
+        }
+
+        .pulse-effect {
+            animation: cardPulse 0.4s ease;
+        }
+
+        .dish-photo-container {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background-color: #111;
+            overflow: hidden;
+        }
+
+        .dish-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: brightness(0.92);
+        }
+
+        .menu-card:hover .dish-photo-container .dish-photo {
+            transform: scale(1.08);
+            filter: brightness(1.05);
+        }
+
+        /* زر المفضلة القلبي الفخم */
+        .fav-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .fav-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.1);
+        }
+
+        .fav-btn.active {
+            background: #d4af37;
+            border-color: #fff;
+        }
+
+        .dish-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .dish-info h3 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+        }
+
+        .dish-info p {
+            font-size: 13px;
+            color: #aaa;
+            margin: 0 0 15px 0;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .dish-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+        }
+
+        .dish-price-row .price {
+            font-size: 16px;
+            font-weight: 900;
+            color: #d4af37;
+        }
+
+        .dish-price-row .dish-tag {
+            font-size: 11px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 10px;
+            border-radius: 6px;
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .order-action-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: #1a1a1a;
+            border: none;
+            width: 28px;
+            height: 32px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #252525;
+        }
+
+        .qty-input {
+            width: 35px;
+            height: 32px;
+            border: none;
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+            background: transparent;
+            color: #fff;
+        }
+
+        .add-to-cart-btn {
+            flex: 1;
+            background-color: #d4af37;
+            color: #0d0d0d;
+            border: none;
+            height: 34px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #e6c547;
+            transform: scale(1.02);
+        }
+
+        .category-heading {
+            max-width: 1200px;
+            margin: 40px auto 10px auto;
+            padding: 0 15px;
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* حاوية الإشعارات المنبثقة (Toast) */
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            background: linear-gradient(135deg, #1c1c1c 0%, #111 100%);
+            color: #fff;
+            border: 1px solid #d4af37;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInUp 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .cart-floating-bar {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 2px solid #d4af37;
+            padding: 12px 25px;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .cart-floating-bar a {
+            background-color: #d4af37;
+            color: #0d0d0d;
+            text-decoration: none;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        
+        .cart-floating-bar a:hover {
+            background-color: #e6c547;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .section-title h2 {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 900;
+        }
+        .section-title p {
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">تنور خبز وزيت <span>للفطائر والمعجنات</span></div>
+        <nav class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="menu.html" class="active">قائمة الطعام</a>
+            <a href="order.html">الأوردر والسلة</a>
+        </nav>
+    </header>
+
+    <div class="page-container">
+        <div class="section-title">
+            <h2>منيو تنور خبز وزيت  🥖</h2>
+            <!-- <p>أشهى معجنات وفطائر التنور البلدي الطازجة 🔥</p> -->
+        </div>
+
+        <!-- قسم الفطائر الكلاسيكية والأجبان -->
+        <h3 class="category-heading">🥖 الفطائر الكلاسيكية </h3>
+        <div class="menu-grid">
+
+            <div class="menu-card" id="card_zaatar">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة زعتر ', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80" alt="فطيرة زعتر" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة زعتر  🌿</h3>
+                    <p>خلطة زعتر لبنانية أصلية  .</p>
+                    <div class="dish-price-row">
+                        <span class="price">8,000 ل.س</span>
+                        <!-- <span class="dish-tag">تنور</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_zaatar" data-name="فطيرة زعتر " readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة زعتر ', 8000, 'qty_zaatar', 'card_zaatar')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_muhammara">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة محمرة ', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" alt="فطيرة محمرة" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة محمرة  🌶️</h3>
+                    <p>دبس فلفل أحمر بلدي مطهى ليعطيك نغمة طعم لا تقاوم.</p>
+                    <div class="dish-price-row">
+                        <span class="price">8,000 ل.س</span>
+                        <!-- <span class="dish-tag">تنور</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_muhammara" data-name="فطيرة محمرة " readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة محمرة ', 8000, 'qty_muhammara', 'card_muhammara')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_akkawi">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة جبنة عكاوي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80" alt="فطيرة جبنة عكاوي" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة جبنة عكاوي 🧀</h3>
+                    <p>جبنة عكاوي بلدية خفيفة الملوحة،  .</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">أجبان</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_akkawi', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_akkawi" data-name="فطيرة جبنة عكاوي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_akkawi', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة جبنة عكاوي', 10000, 'qty_akkawi', 'card_akkawi')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة جبنة قشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="فطيرة جبنة قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة جبنة قشقوان 🧀</h3>
+                    <p>جبنة قشقوان صفراء فاخرة، .</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">أجبان</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_kashkaval" data-name="فطيرة جبنة قشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة جبنة قشقوان', 15000, 'qty_kashkaval', 'card_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_qareesha">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة قريشة بلدية', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80" alt="فطيرة قريشة" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة قريشة بلدية 🥛</h3>
+                    <p>قريشة طازجة ونقية متبلة بحبة البركة العطرة ورشة زيت زيتون بكر.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">أجبان</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_qareesha', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_qareesha" data-name="فطيرة قريشة بلدية" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_qareesha', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة قريشة بلدية', 10000, 'qty_qareesha', 'card_qareesha')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_kashk">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة كشك تراثي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80" alt="فطيرة كشك" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة كشك تراثي 🌾</h3>
+                    <p>مزيج القمح واللبن المجفف على الطريقة التراثية العتيقة بخلطة دافئة ومميزة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">تراث</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_kashk', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_kashk" data-name="فطيرة كشك تراثي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_kashk', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة كشك تراثي', 10000, 'qty_kashk', 'card_kashk')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_salq">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة سلق بالحامض', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="فطيرة سلق" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة سلق بالحامض 🥬</h3>
+                    <p>أوراق السلق الطازجة المحشوة مع البصل المكرمل ولمسة سماق حامضة ومنعشة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">خضار</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_salq', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_salq" data-name="فطيرة سلق بالحامض" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_salq', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة سلق بالحامض', 10000, 'qty_salq', 'card_salq')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_olives_salad">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة سلطة زيتون', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80" alt="زيتون سلطة" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة سلطة زيتون 🫒</h3>
+                    <p>مفروم الزيتون الأسود والأخضر المتبل بالبهارات والخضار الطازجة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">سلطات</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_olives_salad', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_olives_salad" data-name="فطيرة سلطة زيتون" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_olives_salad', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة سلطة زيتون', 15000, 'qty_olives_salad', 'card_olives_salad')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_oil_bread">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('خبزة زيت وستو', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80" alt="خبزة زيت" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>خبزة زيت وستو 🫒</h3>
+                    <p>خبز تنور ذهبي محمر بـ أفضل زيت زيتون صافي، بسيط وغاية في اللذة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">خبز</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_oil_bread', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_oil_bread" data-name="خبزة زيت وستو" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_oil_bread', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('خبزة زيت وستو', 10000, 'qty_oil_bread', 'card_oil_bread')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_tannour_pack">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('ربطة خبز تنور (5 أرغفة)', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=600&q=80" alt="خبز تنور" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>ربطة خبز تنور (5 أرغفة) 🫓</h3>
+                    <p>خبز بلدي دافئ وناعم يفوح منه عبق الحطب، طازج ومناسب لكل سفرة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">12,000 ل.س</span>
+                        <!-- <span class="dish-tag">خبز</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_tannour_pack', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_tannour_pack" data-name="ربطة خبز تنور (5 أرغفة)" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_tannour_pack', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('ربطة خبز تنور (5 أرغفة)', 12000, 'qty_tannour_pack', 'card_tannour_pack')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- قسم التخصصات وسفن الفروج -->
+        <h3 class="category-heading">🍗 فطائر التخصصات وسفن الفروج</h3>
+        <div class="menu-grid">
+
+            <div class="menu-card" id="card_toshka">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة طوشكا', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80" alt="طوشكا" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة طوشكا 🥪</h3>
+                    <p>شرائح المرتديلا الفاخرة مع طبقة الجبن الذائب، محمرة بعناية فائقة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">تخصصات</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_toshka', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_toshka" data-name="فطيرة طوشكا" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_toshka', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة طوشكا', 10000, 'qty_toshka', 'card_toshka')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_sujuk">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة سجق سفن فروج', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80" alt="فطيرة سجق" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة سجق سفن فروج 🍗</h3>
+                    <p>سجق شرقي متبل بخلطة سفن فروج الشهيرة والبهارات الغنية.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">فروج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_sujuk', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_sujuk" data-name="فطيرة سجق سفن فروج" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_sujuk', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة سجق سفن فروج', 15000, 'qty_sujuk', 'card_sujuk')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_marina">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة مارينا سفن فروج', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=80" alt="فطيرة مارينا" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة مارينا سفن فروج 🍗</h3>
+                    <p>خلطة مارينا الخاصة بسفن الفروج المقرمشة، تجربة طعم غنية ومميزة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">فروج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_marina', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_marina" data-name="فطيرة مارينا سفن فروج" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_marina', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة مارينا سفن فروج', 15000, 'qty_marina', 'card_marina')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_pizza">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('بيتزا التنور الخاصة', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="بيتزا التنور" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>بيتزا التنور الخاصة 🍕</h3>
+                    <p>عجينة تنور هشة مغطاة بصلصة الطماطم الغنية، الجبن السائح والخضار الطازجة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">20,000 ل.س</span>
+                        <!-- <span class="dish-tag">بيتزا</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_pizza', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_pizza" data-name="بيتزا التنور الخاصة" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_pizza', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('بيتزا التنور الخاصة', 20000, 'qty_pizza', 'card_pizza')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_zorba">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة الزوبع الملكية', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" alt="فطيرة الزوبع" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة الزوبع الملكية 🔥</h3>
+                    <p>إبداع خاص من مطبخنا بتتبيلة وتوليفة بهارات لا تشبه سواها.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">مميز</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_zorba', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_zorba" data-name="فطيرة الزوبع الملكية" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_zorba', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة الزوبع الملكية', 10000, 'qty_zorba', 'card_zorba')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- قسم التشكيلات والأنواع المزدوجة -->
+        <h3 class="category-heading">✨ التشكيلات والأنواع المزدوجة</h3>
+        <div class="menu-grid">
+
+            <div class="menu-card" id="card_zaatar_muhammara">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج زعتر ومحمرة', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80" alt="زعتر مع محمرة" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج زعتر ومحمرة 🌿🌶️</h3>
+                    <p>الجمع المثالي بين عطر الزعتر اللبناني وحرارة المحمرة المتوازنة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">10,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_muhammara', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_zaatar_muhammara" data-name="مزدوج زعتر ومحمرة" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_muhammara', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج زعتر ومحمرة', 10000, 'qty_zaatar_muhammara', 'card_zaatar_muhammara')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_zaatar_akkawi">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج زعتر وعكاوي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80" alt="زعتر مع عكاوي" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج زعتر وعكاوي 🌿🧀</h3>
+                    <p>أصالة الزعتر وبركة الجبن العكاوي الذائب في كل قضمة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_akkawi', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_zaatar_akkawi" data-name="مزدوج زعتر وعكاوي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_akkawi', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج زعتر وعكاوي', 15000, 'qty_zaatar_akkawi', 'card_zaatar_akkawi')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_zaatar_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج زعتر وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="زعتر مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج زعتر وقشقوان 🌿🧀</h3>
+                    <p>نكهة الزعتر العطري مع دسم وفخامة القشقوان المحمرة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_zaatar_kashkaval" data-name="مزدوج زعتر وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_zaatar_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج زعتر وقشقوان', 15000, 'qty_zaatar_kashkaval', 'card_zaatar_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_muhammara_akkawi">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج محمرة وعكاوي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" alt="محمرة مع عكاوي" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج محمرة وعكاوي 🌶️🧀</h3>
+                    <p>تناغم ساحر بين حموضة وحرارة المحمرة وطراوة الجبن البلدي.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara_akkawi', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_muhammara_akkawi" data-name="مزدوج محمرة وعكاوي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara_akkawi', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج محمرة وعكاوي', 15000, 'qty_muhammara_akkawi', 'card_muhammara_akkawi')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_muhammara_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج محمرة وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" alt="محمرة مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج محمرة وقشقوان 🌶️🧀</h3>
+                    <p>مذاق المحمرة السورية القوي يغرق في طعم القشقوان السائح.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_muhammara_kashkaval" data-name="مزدوج محمرة وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_muhammara_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج محمرة وقشقوان', 15000, 'qty_muhammara_kashkaval', 'card_muhammara_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_olives_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج زيتون وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80" alt="زيتون مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج زيتون وقشقوان 🫒🧀</h3>
+                    <p>حبيبات الزيتون المتبلة مع غرقانة القشقوان الذائبة بحرارة التنور.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_olives_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_olives_kashkaval" data-name="مزدوج زيتون وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_olives_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج زيتون وقشقوان', 15000, 'qty_olives_kashkaval', 'card_olives_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_mushroom_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج فطر وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="فطر مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج فطر وقشقوان 🍄🧀</h3>
+                    <p>شرائح الفطر الطازج متبلة ومغطاة بالكامل بطبقة قشقوان غنية.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_mushroom_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_mushroom_kashkaval" data-name="مزدوج فطر وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_mushroom_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج فطر وقشقوان', 15000, 'qty_mushroom_kashkaval', 'card_mushroom_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_sujuk_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج سجق وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80" alt="سجق مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج سجق وقشقوان 🍗🧀</h3>
+                    <p>السجق الشرقي الحار قليلاً يتحد مع بركة القشقوان السائحة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">20,000 ل.س</span>
+                        <!-- <span class="dish-tag">فروج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_sujuk_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_sujuk_kashkaval" data-name="مزدوج سجق وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_sujuk_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج سجق وقشقوان', 20000, 'qty_sujuk_kashkaval', 'card_sujuk_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_marina_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج مارينا وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=80" alt="مارينا مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج مارينا وقشقوان 🍗🧀</h3>
+                    <p>خلطة مارينا المميزة بسفن الفروج مع فيضان من الجبن السائح.</p>
+                    <div class="dish-price-row">
+                        <span class="price">20,000 ل.س</span>
+                        <!-- <span class="dish-tag">فروج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_marina_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_marina_kashkaval" data-name="مزدوج مارينا وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_marina_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج مارينا وقشقوان', 20000, 'qty_marina_kashkaval', 'card_marina_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_corn_kashkaval">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('مزدوج درة وقشقوان', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80" alt="درة مع قشقوان" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>مزدوج درة وقشقوان 🌽🧀</h3>
+                    <p>حبات الذرة الحلوة والمقرمشة مع طراوة القشقوان الذائبة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">مزدوج</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_corn_kashkaval', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_corn_kashkaval" data-name="مزدوج درة وقشقوان" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_corn_kashkaval', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('مزدوج درة وقشقوان', 15000, 'qty_corn_kashkaval', 'card_corn_kashkaval')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_cheese_mix">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('ميكس أجبان ملكي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80" alt="جبنة ميكس" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>ميكس أجبان ملكي 🧀🔥</h3>
+                    <p>توليفة فاخرة لا تعوض تجمع بين أطيب أنواع العكاوي والقشقوان.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">أجبان</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_cheese_mix', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_cheese_mix" data-name="ميكس أجبان ملكي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_cheese_mix', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('ميكس أجبان ملكي', 15000, 'qty_cheese_mix', 'card_cheese_mix')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_labneh_veg">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('لبنة بلدية بالخضار', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="لبنة مع خضار" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>لبنة بلدية بالخضار 🥛🥗</h3>
+                    <p>لبنة بيضاء منعشة مع شرائح الخيار، النعناع الطازج، وزيت الزيتون.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">بارد</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_labneh_veg', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_labneh_veg" data-name="لبنة بلدية بالخضار" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_labneh_veg', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('لبنة بلدية بالخضار', 15000, 'qty_labneh_veg', 'card_labneh_veg')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_akkawi_veg">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('فطيرة عكاوي بالخضار', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80" alt="عكاوي مع خضار" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>فطيرة عكاوي بالخضار 🧀🥗</h3>
+                    <p>جبنة عكاوي محمرة فوق فرشة من أطزج شرائح الطماطم والخضار.</p>
+                    <div class="dish-price-row">
+                        <span class="price">15,000 ل.س</span>
+                        <!-- <span class="dish-tag">أجبان</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_akkawi_veg', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_akkawi_veg" data-name="فطيرة عكاوي بالخضار" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_akkawi_veg', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('فطيرة عكاوي بالخضار', 15000, 'qty_akkawi_veg', 'card_akkawi_veg')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- قسم المشروبات الباردة والساخنة -->
+        <h3 class="category-heading">🥤 المشروبات الباردة والساخنة</h3>
+        <div class="menu-grid">
+
+            <div class="menu-card" id="card_cola">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('كولا مثلجة', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80" alt="كولا" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>كولا مثلجة 🧊</h3>
+                    <p>مشروب غازي منعش بارد ليروي عطشك بعد أطيب أكل.</p>
+                    <div class="dish-price-row">
+                        <span class="price">7,000 ل.س</span>
+                        <!-- <span class="dish-tag">مشروبات</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_cola', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_cola" data-name="كولا مثلجة" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_cola', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('كولا مثلجة', 7000, 'qty_cola', 'card_cola')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_ayran">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('عصير سلس طبيعي', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" alt="عصير" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>عصير سلس طبيعي 🍊</h3>
+                    <p>مذاق الفواكه الطبيعية المنعشة في كل رشفة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">7,000 ل.س</span>
+                        <!-- <span class="dish-tag">مشروبات</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_ayran', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_ayran" data-name="عصير سلس طبيعي" readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_ayran', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('عصير سلس طبيعي', 7000, 'qty_ayran', 'card_ayran')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" id="card_tea">
+                <div class="dish-photo-container">
+                    <button class="fav-btn" onclick="toggleFavorite('شاي أحمر ', this)" title="إضافة للمفضلة">🤍</button>
+                    <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80" alt="شاي" class="dish-photo">
+                </div>
+                <div class="dish-info">
+                    <h3>شاي أحمر  ☕</h3>
+                    <p>كأس شاي أحمر ساخن يعدل المزاج ويطيب الجلسة.</p>
+                    <div class="dish-price-row">
+                        <span class="price">5,000 ل.س</span>
+                        <!-- <span class="dish-tag">ساخن</span> -->
+                    </div>
+                    <div class="order-action-box">
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('qty_tea', -1)">-</button>
+                            <input type="text" value="1" class="qty-input" id="qty_tea" data-name="شاي أحمر " readonly>
+                            <button class="qty-btn" onclick="changeQty('qty_tea', 1)">+</button>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCartFromMenu('شاي أحمر ', 5000, 'qty_tea', 'card_tea')">إضافة للسلة 🛒</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- حاوية الإشعارات المنبثقة -->
+    <div id="toastContainer"></div>
+
+    <!-- الشريط العائم للسلة -->
+    <div class="cart-floating-bar" id="cartFloatingBar">
+        <span>🛒 تم إضافة أطعمة للسلة!</span>
+        <a href="order.html">الانتقال للسلة وإكمال الطلب 🚀</a>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة © 2026 | تنور خبز وزيت للفطائر والمعجنات</p>
+    </footer>
+
+    <!-- سكربت العداد، المفضلة، الإشعارات، والنبضات الذهبية -->
+    <script>
+        function playInteractionSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(580, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.06);
+                
+                gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.06);
+            } catch (e) {}
+        }
+
+        function showToast(message) {
+            let container = document.getElementById('toastContainer');
+            let toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `✨ ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function toggleFavorite(itemName, btn) {
+            playInteractionSound();
+            let favorites = JSON.parse(localStorage.getItem('restaurantFavs')) || [];
+            let index = favorites.indexOf(itemName);
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+                btn.classList.remove('active');
+                btn.innerHTML = '🤍';
+                showToast(`تمت إزالة "${itemName}" من المفضلة`);
+            } else {
+                favorites.push(itemName);
+                btn.classList.add('active');
+                btn.innerHTML = '❤️';
+                showToast(`تمت إضافة "${itemName}" إلى مفضلتك الملكية!`);
+            }
+            localStorage.setItem('restaurantFavs', JSON.stringify(favorites));
+        }
+
+        function changeQty(id, delta) {
+            playInteractionSound();
+            let input = document.getElementById(id);
+            if (!input) return;
+            let val = parseInt(input.value) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            if (val > 50) val = 50;
+            input.value = val;
+        }
+
+        function addToCartFromMenu(itemName, itemPrice, qtyId, cardId) {
+            playInteractionSound();
+            let qtyInput = document.getElementById(qtyId);
+            let qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+
+            let cart = JSON.parse(localStorage.getItem('restaurantCart')) || [];
+
+            let existingItem = cart.find(i => i.name === itemName);
+            if (existingItem) {
+                existingItem.qty = qty;
+            } else {
+                cart.push({ name: itemName, price: itemPrice, qty: qty, note: '' });
+            }
+
+            localStorage.setItem('restaurantCart', JSON.stringify(cart));
+            document.getElementById('cartFloatingBar').style.display = 'flex';
+            showToast(`تمت إضافة (${qty}x ${itemName}) إلى السلة بنجاح!`);
+
+            // تشغيل النبضة الذهبية على الكارت المحدد
+            if (cardId) {
+                let card = document.getElementById(cardId);
+                if (card) {
+                    card.classList.add('pulse-effect');
+                    setTimeout(() => card.classList.remove('pulse-effect'), 400);
+                }
+            }
+        }
+
+        window.onload = function() {
+            // استرجاع حالة المفضلة
+            let favorites = JSON.parse(localStorage.getItem('restaurantFavs')) || [];
+            document.querySelectorAll('.menu-card').forEach(card => {
+                let btn = card.querySelector('.fav-btn');
+                if (btn) {
+                    let itemName = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    if (favorites.includes(itemName)) {
+                        btn.classList.add('active');
+                        btn.innerHTML = '❤️';
+                    }
+                }
+            });
+
+            let cart = JSON.parse(localStorage.getItem('restaurantCart')) || [];
+            if (cart.length > 0) {
+                document.getElementById('cartFloatingBar').style.display = 'flex';
+                
+                document.querySelectorAll('.qty-input').forEach(input => {
+                    let itemName = input.getAttribute('data-name');
+                    let savedItem = cart.find(i => i.name === itemName);
+                    if (savedItem) {
+                        input.value = savedItem.qty;
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+
+</html>
