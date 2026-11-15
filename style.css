@@ -1,0 +1,822 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: #e5e5e5;
+    line-height: 1.6;
+}
+
+/* الشريط العلوي */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: rgba(13, 13, 13, 0.95);
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    display: block;
+    font-size: 11px;
+    color: #d4af37;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #b3b3b3;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 600;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #d4af37;
+}
+
+/* الأزرار العامة مع تأثير الضغطة */
+.btn-primary {
+    background: #d4af37;
+    color: #0d0d0d;
+    padding: 12px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.3s, transform 0.15s;
+}
+
+.btn-primary:hover {
+    background: #e6c547;
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #d4af37;
+    padding: 12px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.3s, transform 0.15s;
+}
+
+.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-outline:active {
+    transform: scale(0.97);
+}
+
+/* الصفحة الرئيسية */
+.hero {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    background: linear-gradient(rgba(13, 13, 13, 0.75), rgba(13, 13, 13, 0.95)),
+        radial-gradient(circle at center, #261f0c 0%, #0d0d0d 85%);
+}
+
+.hero-content {
+    max-width: 750px;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.15);
+    color: #d4af37;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.hero-content h1 {
+    font-size: 50px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.hero-content h1 span {
+    color: #d4af37;
+}
+
+.hero-content p {
+    font-size: 18px;
+    color: #b3b3b3;
+    margin-bottom: 35px;
+}
+
+.hero-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* ميزات المطعم بالصفحة الرئيسية */
+.features-section {
+    padding: 80px 8%;
+    background: #121212;
+    text-align: center;
+}
+
+.section-title {
+    margin-bottom: 50px;
+}
+
+.section-title h2 {
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.section-title p {
+    color: #888;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.feature-box {
+    background: #181818;
+    border: 1px solid #262626;
+    padding: 30px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    border-color: #d4af37;
+}
+
+.feature-box h3 {
+    color: #d4af37;
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.feature-box p {
+    color: #999;
+    font-size: 14px;
+}
+
+/* صفحات القائمة والأوردر */
+.page-container {
+    padding: 60px 8%;
+    background: #121212;
+    min-height: 80vh;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.menu-card {
+    background: #181818;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.menu-card:hover {
+    transform: translateY(-6px);
+    border-color: #d4af37;
+}
+
+/* 1. تأثير التوهج الذهبي للأطباق المميزة (استخدم كلاس featured-dish مع كرت الصنف) */
+.menu-card.featured-dish {
+    border: 1px solid #d4af37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    animation: goldPulse 3s infinite;
+}
+
+@keyframes goldPulse {
+    0% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+    50% { box-shadow: 0 0 22px rgba(212, 175, 55, 0.35); }
+    100% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+}
+
+/* تأثير زووم ناعم لصورة الوجبة عند تمرير الماوس */
+.menu-card:hover .dish-photo,
+.menu-card:hover .dish-img {
+    transform: scale(1.05);
+}
+
+.dish-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #d4af37;
+    color: #0d0d0d;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    z-index: 2;
+}
+
+.dish-img {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    background-color: #222;
+    transition: transform 0.4s ease;
+}
+
+.dish-photo {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid #d4af37;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.dish-info {
+    padding: 20px;
+    text-align: right;
+}
+
+.dish-info h3 {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.dish-info p {
+    color: #999;
+    font-size: 13px;
+    margin-bottom: 15px;
+    min-height: 38px;
+}
+
+.dish-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #222;
+    padding-top: 12px;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 900;
+    color: #d4af37;
+}
+
+.dish-tag {
+    background: #262626;
+    color: #aaa;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* النماذج (الأوردر والحجز) */
+.forms-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.form-container {
+    background: #181818;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 35px;
+    text-align: center;
+}
+
+.section-tag {
+    display: inline-block;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.form-container h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.form-container p {
+    color: #888;
+    margin-bottom: 25px;
+    font-size: 13px;
+}
+
+.action-form {
+    text-align: right;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    color: #b3b3b3;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 11px 14px;
+    background: #121212;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #d4af37;
+}
+
+.submit-btn {
+    width: 100%;
+    background: #d4af37;
+    color: #0d0d0d;
+    border: none;
+    padding: 13px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.15s;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: #e6c547;
+}
+
+.submit-btn:active {
+    transform: scale(0.97);
+}
+
+/* ==========================================
+   2. زر الواتساب العائم السريع (Floating WhatsApp)
+   ========================================== */
+.float-whatsapp {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: #25d366;
+    color: #fff;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 999;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.float-whatsapp:hover {
+    transform: scale(1.1);
+}
+
+/* ==========================================
+   تنسيق تنبيه الإضافة للسلة (Toast Notification)
+   ========================================== */
+.toast-notification {
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+    color: #0d0d0d;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 14px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* التذييل */
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #090909;
+    color: #666;
+    font-size: 13px;
+    border-top: 1px solid #1a1a1a;
+}
+
+.footer-sub {
+    margin-top: 5px;
+    color: #d4af37;
+    font-size: 12px;
+}
+
+.category-heading {
+    color: #d4af37;
+    font-size: 22px;
+    margin: 40px 0 20px 0;
+    text-align: right;
+    border-bottom: 1px solid #222;
+    padding-bottom: 8px;
+}
+
+/* ==========================================
+   تنسيقات الفاتورة والسلة المطورة (تصميم إيصال فاخر)
+   ========================================== */
+
+.order-tracker,
+.reservation-section {
+    background: #141414;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.cart-section,
+.summary-box {
+    background: linear-gradient(160deg, #1a1a1a 0%, #101010 100%);
+    border: 1px solid #d4af37;
+    border-top: 5px solid #d4af37;
+    padding: 28px 25px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.12);
+    position: relative;
+}
+
+.cart-section h3,
+.summary-box h3 {
+    color: #d4af37;
+    font-size: 21px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tracker-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a1a;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border-right: 4px solid #d4af37;
+}
+
+.tracker-box h4 {
+    color: #d4af37;
+    margin: 0 0 5px 0;
+}
+
+.tracker-box p {
+    margin: 0;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.counter-badge {
+    font-size: 24px;
+    font-weight: bold;
+    background: #d4af37;
+    color: #000;
+    padding: 5px 18px;
+    border-radius: 6px;
+}
+
+.cart-items-list,
+.payment-summary-content {
+    margin: 15px 0;
+    max-height: 290px;
+    overflow-y: auto;
+    padding: 5px 0;
+}
+
+.empty-cart-text {
+    color: #777;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 14px;
+}
+
+.cart-item-row,
+.payment-items-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 3px solid #d4af37;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.cart-item-row:hover,
+.payment-items-list li:hover {
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.remove-item-btn {
+    background: rgba(220, 38, 38, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.remove-item-btn:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+/* ==========================================
+   تنسيق حقل الملاحظات (ألوان هادئة ومريحة للعين)
+   ========================================== */
+.item-note-input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 6px;
+    color: #e5e5e5;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.item-note-input::placeholder {
+    color: #666666;
+}
+
+.item-note-input:focus {
+    border-color: #d4af37;
+    background: #161616;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 19px;
+    font-weight: 900;
+    color: #d4af37;
+    margin: 18px 0 5px 0;
+}
+
+.add-cart-btn {
+    background: #333;
+    border: 1px solid #d4af37;
+}
+
+.reservation-section {
+    margin-top: 40px;
+}
+
+.reservation-desc {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.reservation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.reservation-submit-btn {
+    margin-top: 10px;
+}
+
+/* ==========================================
+   تنسيقات شريط العروض والتنبيهات
+   ========================================== */
+.promo-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+    border: 1px solid #d4af37;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.promo-banner::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: #d4af37;
+}
+
+.promo-icon {
+    font-size: 32px;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.promo-text h4 {
+    color: #d4af37;
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+
+.promo-text p {
+    margin: 0;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   تنسيقات صفحة الدفع الإلكتروني (شام كاش)
+   ========================================== */
+
+.payment-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.payment-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.shamcash-box {
+    background: #1a1a1a;
+    border: 1px dashed #d4af37;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.shamcash-info p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.highlight-id {
+    color: #d4af37;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.instructions-text {
+    font-size: 12px !important;
+    color: #888 !important;
+}
+
+.payment-submit-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+    color: #000;
+    font-weight: bold;
+}
+
+.payment-submit-btn:hover {
+    background: linear-gradient(135deg, #e5c158 0%, #d4af37 100%);
+}
+
+/* التجاوب مع الشاشات الصغيرة وتعديل قياس العنوان الرئيسي */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 36px !important;
+    }
+
+    .reservation-grid,
+    .payment-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .tracker-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .counter-badge {
+        align-self: flex-end;
+    }
+
+    .promo-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+}
